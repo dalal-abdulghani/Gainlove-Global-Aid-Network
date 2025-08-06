@@ -1,0 +1,406 @@
+{
+      "users": [
+            {
+                  "id": 1,
+                  "username": "admin",
+                  "email": "admin@gainlove.org",
+                  "password": "admin123",
+                  "role": "admin",
+                  "name": "Admin User"
+            },
+            {
+                  "id": 2,
+                  "username": "user",
+                  "email": "user@gainlove.org",
+                  "password": "user123",
+                  "role": "user",
+                  "name": "Regular User"
+            }
+      ],
+      "menuItems": [
+            {
+                  "name": "Home",
+                  "link": "/",
+                  "submenu": [
+                        {
+                              "name": "Home 1",
+                              "link": "/"
+                        },
+                        {
+                              "name": "Home 2",
+                              "link": "/home-2"
+                        },
+                        {
+                              "name": "Home 3",
+                              "link": "/home-3"
+                        },
+                        {
+                              "name": "Home 4",
+                              "link": "/home-4"
+                        }
+                  ]
+            },
+            {
+                  "name": "CAMPAIGNS",
+                  "link": "/campaigns",
+                  "submenu": [
+                        {
+                              "name": "Campaign Grid",
+                              "link": "/campaigns/grid"
+                        },
+                        {
+                              "name": "Campaign List",
+                              "link": "/campaigns/list"
+                        },
+                        {
+                              "name": "Single Campaign",
+                              "link": "/campaigns/single"
+                        }
+                  ]
+            },
+            {
+                  "name": "ABOUT",
+                  "link": "/about",
+                  "submenu": [
+                        {
+                              "name": "Who We are",
+                              "link": "/about"
+                        },
+                        {
+                              "name": "How We Help",
+                              "link": "/about/help"
+                        },
+                        {
+                              "name": "Core Values",
+                              "link": "/about/values"
+                        },
+                        {
+                              "name": "Our Team",
+                              "link": "/about/team"
+                        },
+                        {
+                              "name": "Career",
+                              "link": "/about/career"
+                        }
+                  ]
+            },
+            {
+                  "name": "BLOG",
+                  "link": "/blog",
+                  "submenu": [
+                        {
+                              "name": "Blog Listing",
+                              "link": "/blog"
+                        },
+                        {
+                              "name": "Single Post",
+                              "link": "/blog/post"
+                        }
+                  ]
+            },
+            {
+                  "name": "PAGES",
+                  "link": "/pages",
+                  "submenu": [
+                        {
+                              "name": "Contact Us",
+                              "link": "/contact"
+                        },
+                        {
+                              "name": "Our stories",
+                              "link": "/stories"
+                        },
+                        {
+                              "name": "Become a Volunteer",
+                              "link": "/volunteer"
+                        },
+                        {
+                              "name": "Gallery",
+                              "link": "/gallery"
+                        },
+                        {
+                              "name": "FAQ",
+                              "link": "/faq"
+                        },
+                        {
+                              "name": "Donation",
+                              "link": "/donate"
+                        },
+                        {
+                              "name": "Page 404",
+                              "link": "/404"
+                        }
+                  ]
+            }
+      ],
+      "heroSlides": [
+            {
+                   "id": 1,
+      "title": "Justice\nbegins where\ninequality\nends",
+      "subtitle": "We're building a world where everyone has the power to shape their lives.",
+      "buttonText": "Donate Now",
+      "buttonLink": "/donate",
+      "image": "h1-slider02.png"
+            },
+            {
+                  "id": 2,
+      "title": "Justice\nbegins where\ninequality\nends",
+      "subtitle": "We're building a world where everyone has the power to shape their lives.",
+      "buttonText": "Donate Now",
+      "buttonLink": "/donate",
+      "image": "h2-slider02.png"
+            }
+      ],
+      "features": [
+            {
+                  "id": 1,
+                  "icon": "src/assets/images/free-access.svg",
+                  "title": "Free Access",
+                  "description": "We provide free access to education and resources for all communities."
+            },
+            {
+                  "id": 2,
+                  "icon": "src/assets/images/locals-for-locals.svg",
+                  "title": "Locals for Locals",
+                  "description": "Supporting local communities to help themselves and their neighbors."
+            },
+            {
+                  "id": 3,
+                  "icon": "src/assets/images/real-impact.svg",
+                  "title": "Real Impact",
+                  "description": "Creating measurable, lasting change in communities worldwide."
+            },
+            {
+                  "id": 4,
+                  "icon": "src/assets/images/safety-net.svg",
+                  "title": "Safety Net",
+                  "description": "A safety network lets your donations and funds guarantee a safe way network and public."
+            }
+      ],
+      "campaigns": [
+            {
+                  "id": 1,
+                  "image": "src/assets/images/campaing-5.jpg",
+                  "title": "Emergency Relief Fund",
+                  "description": "Help provide immediate assistance to communities affected by natural disasters.",
+                  "goal": 50000,
+                  "raised": 35000,
+                  "category": "Emergency"
+            },
+            {
+                  "id": 2,
+                  "image": "src/assets/images/campaing-1.jpg",
+                  "title": "Education for All",
+                  "description": "Supporting education initiatives in underserved communities worldwide.",
+                  "goal": 75000,
+                  "raised": 45000,
+                  "category": "Education"
+            },
+            {
+                  "id": 3,
+                  "image": "src/assets/images/campaing-3.jpg",
+                  "title": "Clean Water Project",
+                  "description": "Providing clean drinking water to communities in need.",
+                  "goal": 100000,
+                  "raised": 80000,
+                  "category": "Health"
+            }
+      ],
+      "programs": [
+            {
+                  "id": 1,
+                  "image": "src/assets/images/Download African American mom hugging biracial baby in natural light for free.jpeg",
+                  "title": "Child Welfare Program",
+                  "description": "Supporting children and families in need through comprehensive care and education programs.",
+                  "category": "Child Care"
+            },
+            {
+                  "id": 2,
+                  "image": "src/assets/images/Free Joyful Children Playing Image _ Download at StockCake.jpeg",
+                  "title": "Education Initiative",
+                  "description": "Providing quality education to children in underserved communities around the world.",
+                  "category": "Education"
+            },
+            {
+                  "id": 3,
+                  "image": "src/assets/images/Dizisnta Author Portfolio _ Freepik.jpeg",
+                  "title": "Community Development",
+                  "description": "Empowering communities through sustainable development projects and local leadership training.",
+                  "category": "Development"
+            }
+      ],
+      "news": [
+            {
+                  "id": 1,
+                  "image": "src/assets/images/blog08.jpg",
+                  "title": "New Education Center Opens in Rural Community",
+                  "excerpt": "We're excited to announce the opening of our newest education center, providing quality learning opportunities to over 200 children.",
+                  "date": "2024-01-15",
+                  "category": "Education"
+            },
+            {
+                  "id": 2,
+                  "image": "src/assets/images/blog07.jpg",
+                  "title": "Volunteer Spotlight: Meet Sarah Johnson",
+                  "excerpt": "Learn about Sarah's incredible journey as a volunteer and how she's making a difference in communities worldwide.",
+                  "date": "2024-01-10",
+                  "category": "Volunteers"
+            },
+            {
+                  "id": 3,
+                  "image": "src/assets/images/blog06.jpg",
+                  "title": "Clean Water Project Success in Kenya",
+                  "excerpt": "Our latest clean water project has successfully provided clean drinking water to over 5,000 people in rural Kenya.",
+                  "date": "2024-01-05",
+                  "category": "Health"
+            }
+      ],
+      "testimonials": [
+            {
+                  "id": 1,
+                  "name": "Maria Rodriguez",
+                  "role": "Volunteer",
+                  "content": "Working with Gainlove has been one of the most rewarding experiences of my life. The impact we make is real and lasting.",
+                  "image": "src/assets/images/h1-banner07.jpg"
+            },
+            {
+                  "id": 2,
+                  "name": "David Chen",
+                  "role": "Donor",
+                  "content": "I've been donating to Gainlove for years and I can see the real difference my contributions make in communities worldwide.",
+                  "image": "src/assets/images/h1-banner07.jpg"
+            },
+            {
+                  "id": 3,
+                  "name": "Aisha Patel",
+                  "role": "Community Leader",
+                  "content": "Gainlove's programs have transformed our community. The education and resources they provide have given our children hope for a better future.",
+                  "image": "src/assets/images/h1-banner07.jpg"
+            }
+      ],
+      "brands": [
+            {
+                  "src": "src/assets/images/brand-04.svg",
+                  "alt": "Logo 4"
+            },
+            {
+                  "src": "src/assets/images/brand-01.svg",
+                  "alt": "Logo 1"
+            },
+            {
+                  "src": "src/assets/images/brand-03.svg",
+                  "alt": "Logo 3"
+            },
+            {
+                  "src": "src/assets/images/brand-03.svg",
+                  "alt": "Logo 3"
+            },
+            {
+                  "src": "src/assets/images/brand-02.svg",
+                  "alt": "Logo 2"
+            },
+            {
+                  "src": "src/assets/images/brand-03.svg",
+                  "alt": "Logo 3"
+            },
+            {
+                  "src": "src/assets/images/brand-03.svg",
+                  "alt": "Logo 3"
+            },
+            {
+                  "src": "src/assets/images/brand-02.svg",
+                  "alt": "Logo 2"
+            },
+            {
+                  "src": "src/assets/images/brand-03.svg",
+                  "alt": "Logo 3"
+            },
+            {
+                  "src": "src/assets/images/brand-03.svg",
+                  "alt": "Logo 3"
+            },
+            {
+                  "src": "src/assets/images/brand-05.svg",
+                  "alt": "Logo 5"
+            },
+            {
+                  "src": "src/assets/images/brand-03.svg",
+                  "alt": "Logo 3"
+            },
+            {
+                  "src": "src/assets/images/brand-01.svg",
+                  "alt": "Logo 1"
+            },
+            {
+                  "src": "src/assets/images/brand-03.svg",
+                  "alt": "Logo 3"
+            }
+      ],
+      "gallery": [
+            "src/assets/images/campaing-1.jpg",
+            "src/assets/images/campaing-2.jpg",
+            "src/assets/images/campaing-3.jpg",
+            "src/assets/images/campaing-4.jpg",
+            "src/assets/images/campaing-5.jpg",
+            "src/assets/images/blog06.jpg"
+      ],
+      "contactInfo": {
+            "phone": "+[84] 1800 333 555",
+            "email": "contact@example.com",
+            "address": "5617 Glassford Street, New York, NY 10000, USA"
+      },
+      "dashboardData": {
+            "stats": {
+                  "totalDonations": 1250000,
+                  "totalDonors": 15420,
+                  "activeCampaigns": 12,
+                  "volunteers": 850
+            },
+            "recentDonations": [
+                  {
+                        "id": 1,
+                        "donor": "John Smith",
+                        "amount": 500,
+                        "campaign": "Emergency Relief Fund",
+                        "date": "2024-01-15"
+                  },
+                  {
+                        "id": 2,
+                        "donor": "Sarah Johnson",
+                        "amount": 250,
+                        "campaign": "Education for All",
+                        "date": "2024-01-14"
+                  },
+                  {
+                        "id": 3,
+                        "donor": "Mike Davis",
+                        "amount": 1000,
+                        "campaign": "Clean Water Project",
+                        "date": "2024-01-13"
+                  }
+            ],
+            "recentCampaigns": [
+                  {
+                        "id": 1,
+                        "name": "Emergency Relief Fund",
+                        "goal": 50000,
+                        "raised": 35000,
+                        "progress": 70
+                  },
+                  {
+                        "id": 2,
+                        "name": "Education for All",
+                        "goal": 75000,
+                        "raised": 45000,
+                        "progress": 60
+                  },
+                  {
+                        "id": 3,
+                        "name": "Clean Water Project",
+                        "goal": 100000,
+                        "raised": 80000,
+                        "progress": 80
+                  }
+            ]
+      }
+}
