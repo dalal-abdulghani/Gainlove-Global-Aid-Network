@@ -8,14 +8,15 @@
             "build": "vite build",
             "preview": "vite preview",
             "serve": "vite preview"
-            
       },
       "dependencies": {
             "@vueuse/core": "^10.7.0",
             "aos": "^2.3.4",
+            "axios": "^1.11.0",
             "chart.js": "^4.5.0",
             "vue": "^3.4.0",
-            "vue-router": "^4.2.5"
+            "vue-router": "^4.2.5",
+            "vue-toastification": "^2.0.0-rc.5"
       },
       "devDependencies": {
             "@vitejs/plugin-vue": "^5.0.0",

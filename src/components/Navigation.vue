@@ -147,10 +147,10 @@
           <div>
             <h3 class="mb-2 text-lg">Sign in</h3>
             <label class="text-sm rounded-[20px] rounded-tl-none">Username or email *</label>
-            <input v-model="loginForm.username" type="text" class="w-full p-2 my-2 text-sm rounded-[20px] rounded-tl-none" placeholder="Username" />
+            <input v-model="loginForm.username" type="text" class="w-full p-2 my-2 text-sm text-black rounded-[20px] rounded-tl-none" placeholder="Username" />
             <label class="text-sm">Password *</label>
             <input v-model="loginForm.password" type="password" class="w-full p-2 my-2 text-sm rounded-[20px] rounded-tl-none" placeholder="Password" />
-            <button @click="handleLogin" class="w-full p-2 mt-3 text-white bg-[#ea9b08] rounded-[20px] rounded-tl-none hover:bg-orange-400">LOGIN</button>
+            <button @click="handleLogin" class="w-full p-2 mt-3 text-black bg-[#ea9b08] rounded-[20px] rounded-tl-none hover:bg-orange-400">LOGIN</button>
           </div>
 
           <router-link
@@ -174,6 +174,7 @@
 
 <script>
 import logo from '@/assets/images/logo.svg'
+import { authAPI } from '@/services/api' 
 
 export default {
   name: 'Navigation',
@@ -257,17 +258,31 @@ export default {
         this.showLogin = false
       }
     },
-    handleLogin() {
-      const { username, password } = this.loginForm
 
-      if (username === 'admin' && password === '123') {
-        this.loginForm = { username: '', password: '' }
-        this.showLogin = false
-        this.closeMobileMenu()
-        this.$router.push({ name: 'Dashboard' })
+   
+    async handleLogin() {
+      try {
+        const response = await authAPI.login({
+          username: this.loginForm.username,
+          password: this.loginForm.password
+        });
+        if (response.data.message === 'Login successful') {
+         
+          localStorage.setItem('auth', true);
+          console.log('Login successful:', response.data);
+         
+          this.loginForm = { username: '', password: '' }
+          this.showLogin = false
+          this.closeMobileMenu()
 
-      } else {
-        this.$router.push({ name: 'NotFound' })
+         
+          this.$router.push({ path: '/dashboard' });
+        } else {
+          this.$router.push({ path: '/404' });
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        this.$router.push({ path: '/404' });
       }
     }
   },
@@ -282,6 +297,7 @@ export default {
   }
 }
 </script>
+
 
 <style scoped>
 html,

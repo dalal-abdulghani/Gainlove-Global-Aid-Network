@@ -27,13 +27,13 @@
 </template>
 
 <script>
-import ProgramCard from '@/components/cards/ProgramCard.vue';
-import img1 from '@/assets/images/Download African American mom hugging biracial baby in natural light for free.jpeg';
-import img2 from '@/assets/images/Free Joyful Children Playing Image _ Download at StockCake.jpeg';
-import img3 from '@/assets/images/Dizisnta Author Portfolio _ Freepik.jpeg';
-
+import ProgramCard from "@/components/cards/ProgramCard.vue";
+import img1 from "@/assets/images/Download African American mom hugging biracial baby in natural light for free.jpeg";
+import img2 from "@/assets/images/Free Joyful Children Playing Image _ Download at StockCake.jpeg";
+import img3 from "@/assets/images/Dizisnta Author Portfolio _ Freepik.jpeg";
+import { programAPI } from "@/services/api";
 export default {
-  name: 'ProgramsSection',
+  name: "ProgramsSection",
   components: {
     ProgramCard,
   },
@@ -43,21 +43,21 @@ export default {
       defaultPrograms: [
         {
           image: img1,
-          title: 'Fight Poverty<br />Programs & Services',
+          title: "Fight Poverty<br />Programs & Services",
           description:
-            'Provides nutritious food, wholesome food, funds, and vocational training to people suffering from lack of it.',
+            "Provides nutritious food, wholesome food, funds, and vocational training to people suffering from lack of it.",
         },
         {
           image: img2,
-          title: 'Fight Poverty<br />Programs & Services',
+          title: "Fight Poverty<br />Programs & Services",
           description:
-            'Provides nutritious food, wholesome food, funds, and vocational training to people suffering from lack of it.',
+            "Provides nutritious food, wholesome food, funds, and vocational training to people suffering from lack of it.",
         },
         {
           image: img3,
-          title: 'Fight Poverty<br />Programs & Services',
+          title: "Fight Poverty<br />Programs & Services",
           description:
-            'Provides nutritious food, wholesome food, funds, and vocational training to people suffering from lack of it.',
+            "Provides nutritious food, wholesome food, funds, and vocational training to people suffering from lack of it.",
         },
       ],
     };
@@ -69,14 +69,21 @@ export default {
     }
   },
   methods: {
-    loadPrograms() {
-      const savedPrograms = JSON.parse(localStorage.getItem('dashboardContent'))?.programs;
-      
-      this.programs = savedPrograms && savedPrograms.length > 0 
-  ? savedPrograms.slice(0, 3)
-  : this.defaultPrograms.slice(0, 3);
+    async loadPrograms() {
+      try {
+        const response = await programAPI.getPrograms(); 
+        
 
-    }
-  }
+        if (response.data && response.data.length > 0) {
+          this.programs = response.data.slice(0, 3); 
+        } else {
+          this.programs = this.defaultPrograms.slice(0, 3);
+        }
+      } catch (error) {
+        console.error("Error fetching programs:", error);
+        this.programs = this.defaultPrograms.slice(0, 3);
+      }
+    },
+  },
 };
 </script>

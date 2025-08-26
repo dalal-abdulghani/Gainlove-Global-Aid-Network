@@ -4,7 +4,7 @@
   >
     <div class="overflow-hidden rounded-tr-3xl rounded-bl-3xl">
       <img
-        :src="program.image"
+        :src="'http://gainlove-api-v2.test/'+program.image"
         :alt="`program-${index}`"
         class="object-cover w-full h-56 transition duration-700 ease-in-out group-hover:scale-105"
       />

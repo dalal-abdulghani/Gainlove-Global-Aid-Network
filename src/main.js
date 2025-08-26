@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
 import './style.css'
+import Toast, { POSITION } from "vue-toastification";
 
 import 'aos/dist/aos.css'
 import AOS from 'aos'
@@ -54,7 +55,16 @@ const router = createRouter({
             }
       }
 })
+router.beforeEach(async (to, from, next) => {
+  const isAuthenticated = localStorage.getItem('auth') !== null
 
+  if (to.path === '/dashboard' && !isAuthenticated) {
+    next({ path: '/' })
+  } else {
+    next()
+  }
+})
 const app = createApp(App)
+
 app.use(router)
 app.mount('#app') 

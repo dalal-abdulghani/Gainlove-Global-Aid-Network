@@ -37,10 +37,10 @@
             :class="inputClass(errors.email)"
           />
           <textarea
-            v-model="form.message"
+            v-model="form.question"
             placeholder="Enter your question here"
             class="h-32"
-            :class="inputClass(errors.message)"
+            :class="inputClass(errors.question)"
           ></textarea>
 
           <button
@@ -82,19 +82,20 @@
 <script setup>
 import { reactive } from 'vue'
 import bgImage from '@/assets/images/h1-banner08.jpg'
+import { messageAPI } from '../../services/api'
 
 const form = reactive({
   name: '',
   phone: '',
   email: '',
-  message: '',
+  question: '',
 })
 
 const errors = reactive({
   name: '',
   phone: '',
   email: '',
-  message: '',
+  question: '',
 })
 
 const notification = reactive({
@@ -110,7 +111,7 @@ const inputClass = (error) =>
 const validateEmail = (email) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 
-function handleSubmit() {
+async function handleSubmit() {
   Object.keys(errors).forEach((key) => (errors[key] = ''))
 
   if (!form.name) errors.name = 'Name is required'
@@ -120,7 +121,7 @@ function handleSubmit() {
   } else if (!validateEmail(form.email)) {
     errors.email = 'Email is invalid'
   }
-  if (!form.message) errors.message = 'Message is required'
+  if (!form.question) errors.question = 'Message is required'
 
   if (Object.values(errors).some((e) => e)) {
     notification.message = 'Please fill all required fields correctly.'
@@ -129,14 +130,39 @@ function handleSubmit() {
     return
   }
 
-  saveMessageToLocalStorage()
+  try {
+    await saveMessageToApi()
 
-  notification.message = 'Thank you! We received your message.'
-  notification.type = 'success'
-  setTimeout(() => (notification.message = ''), 3000)
+    notification.message = 'Thank you! We received your message.'
+    notification.type = 'success'
+    setTimeout(() => (notification.message = ''), 3000)
 
-  Object.keys(form).forEach((key) => (form[key] = ''))
+
+    Object.keys(form).forEach((key) => (form[key] = ''))
+  } catch (error) {
+    notification.message = 'Something went wrong. Please try again.'
+    notification.type = 'error'
+    setTimeout(() => (notification.message = ''), 3000)
+  }
 }
+
+async function saveMessageToApi() {
+  const newMessage = {
+    ...form,
+    date: new Date().toISOString(),
+  }
+const response = await messageAPI.createMessage(newMessage)
+console.log('API response:', response)
+
+if (response.status !== 201) {
+  throw new Error('Failed to save message')
+}
+
+return response.data
+
+
+}
+
 
 function saveMessageToLocalStorage() {
   const messages = JSON.parse(localStorage.getItem('contactMessages')) || []

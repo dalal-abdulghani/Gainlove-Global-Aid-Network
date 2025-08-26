@@ -143,7 +143,9 @@
                 v-model="currentProgram.description" 
                 rows="4" 
                 :class="['w-full p-2 border rounded', theme === 'dark' ? 'bg-gray-600 text-white border-gray-500' : 'bg-white']"
-              ></textarea>
+              >                {{ isEditingProgram ? currentProgram.description
+               : '' }}
+</textarea>
             </div>
             <div class="flex justify-end space-x-2">
               <button 
@@ -169,13 +171,13 @@
               data-aos="fade-up"
               :data-aos-delay="100 * index"
             >
-              <img :src="program.image" alt="Program Image" class="object-cover w-full h-48">
+              <img :src="'http://gainlove-api-v2.test/'+program.image" alt="Program Image" class="object-cover w-full h-48">
               <div class="p-4">
                 <h3 :class="['mb-2 text-lg font-bold', theme === 'dark' ? 'text-white' : 'text-gray-800']">{{ program.title }}</h3>
                 <p :class="['mb-4 text-sm', theme === 'dark' ? 'text-gray-300' : 'text-gray-600']">{{ program.description }}</p>
                 <div class="flex justify-end space-x-2">
-                  <button @click="editProgram(index)" class="text-sm text-orange-500 hover:text-orange-600">Edit</button>
-                  <button @click="confirmDelete('program', index)" class="text-sm text-red-500 hover:text-red-600">Delete</button>
+                  <button @click="editProgram(program.id)" class="text-sm text-orange-500 hover:text-orange-600">Edit</button>
+                  <button @click="confirmDelete('program', program.id)" class="text-sm text-red-500 hover:text-red-600">Delete</button>
                 </div>
               </div>
             </div>
@@ -252,7 +254,7 @@
               data-aos="fade-up"
               :data-aos-delay="100 * index"
             >
-              <img v-if="news.image" :src="news.image" alt="News Image" class="object-cover w-full h-48">
+              <img v-if="  news.image" :src="'http://gainlove-api-v2.test/'+news.image" alt="News Image" class="object-cover w-full h-48">
               <div class="p-4">
                 <div class="flex items-start justify-between mb-2">
                   <h3 :class="['text-lg font-bold', theme === 'dark' ? 'text-white' : 'text-gray-800']">{{ news.title }}</h3>
@@ -260,8 +262,8 @@
                 </div>
                 <p :class="['mb-4', theme === 'dark' ? 'text-gray-300' : 'text-gray-600']">{{ news.content }}</p>
                 <div class="flex justify-end space-x-2">
-                  <button @click="editNews(index)" class="text-sm text-orange-500 hover:text-orange-600">Edit</button>
-                  <button @click="confirmDelete('news', index)" class="text-sm text-red-500 hover:text-red-600">Delete</button>
+                  <button @click="editNews(news.id)" class="text-sm text-orange-500 hover:text-orange-600">Edit</button>
+                  <button @click="confirmDelete('news', news.id)" class="text-sm text-red-500 hover:text-red-600">Delete</button>
                 </div>
               </div>
             </div>
@@ -313,12 +315,12 @@
               data-aos="fade-up"
               :data-aos-delay="100 * index"
             >
-              <img :src="partner.logo" alt="Partner Logo" class="object-contain max-w-full max-h-20">
+              <img :src="'http://gainlove-api-v2.test/'+ partner.image" alt="Partner Logo" class="object-contain max-w-full max-h-20">
               <div class="absolute top-0 right-0 flex p-1 space-x-1">
-                <button @click="editPartner(index)" class="p-1 text-sm text-white bg-orange-500 rounded-full hover:bg-orange-600">
+                <button @click="editPartner(partner.id)" class="p-1 text-sm text-white bg-orange-500 rounded-full hover:bg-orange-600">
                   <i class="fas fa-edit"></i>
                 </button>
-                <button @click="confirmDelete('partner', index)" class="p-1 text-sm text-white bg-red-500 rounded-full hover:bg-red-600">
+                <button @click="confirmDelete('partner', partner.id)" class="p-1 text-sm text-white bg-red-500 rounded-full hover:bg-red-600">
                   <i class="fas fa-trash"></i>
                 </button>
               </div>
@@ -378,7 +380,7 @@
                   <div class="mb-4">
                     <label :class="['block mb-1 text-sm font-medium', theme === 'dark' ? 'text-gray-300' : 'text-gray-700']">Message</label>
                     <p :class="['p-4 rounded-lg', theme === 'dark' ? 'bg-gray-600 text-white' : 'bg-gray-100 text-gray-800']">
-                      {{ message.message }}
+                      {{ message.question }}
                     </p>
                   </div>
                   
@@ -427,6 +429,7 @@
 import { Chart, registerables } from 'chart.js';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { dashboardAPI, programAPI, newsAPI, partnerAPI, messageAPI } from '@/services/api';
 
 Chart.register(...registerables);
 
@@ -434,12 +437,13 @@ export default {
   name: 'Dashboard',
   data() {
     return {
+      loading: false,
       theme: 'light',
       stats: [
-        { title: 'Total Donations', value: '$24,580', trend: 12.5 },
-        { title: 'Active Campaigns', value: '8', trend: 4.2 },
-        { title: 'New Partners', value: '5', trend: 8.7 },
-        { title: 'Programs', value: '12', trend: 2.1 }
+        { title: 'Total Donations', value: '$0', trend: 0 },
+        { title: 'Active Campaigns', value: '0', trend: 0 },
+        { title: 'New Partners', value: '0', trend: 0 },
+        { title: 'Programs', value: '0', trend: 0 }
       ],
       tabs: [
         { id: 'programs', name: 'Programs' },
@@ -449,46 +453,46 @@ export default {
       ],
       activeTab: 'programs',
       showFabMenu: false,
-      
+
       programs: [],
       showProgramForm: false,
       currentProgram: {
+        id: null,
         title: '',
         description: '',
         image: ''
       },
       isEditingProgram: false,
-      editingProgramIndex: -1,
-      
+
       newsList: [],
       showNewsForm: false,
       currentNews: {
+        id: null,
         title: '',
         content: '',
         date: new Date().toISOString().split('T')[0],
         image: ''
       },
       isEditingNews: false,
-      editingNewsIndex: -1,
-      
+
       partners: [],
       showPartnerForm: false,
       currentPartner: {
+        id: null,
         logo: ''
       },
       isEditingPartner: false,
-      editingPartnerIndex: -1,
-      
+
       messages: [],
-      
+
       showDeleteModal: false,
       itemToDelete: {
         type: '',
-        index: -1
+        id: null
       }
     }
   },
-  mounted() {
+  async mounted() {
     AOS.init({
       duration: 800,
       easing: 'ease-in-out',
@@ -502,121 +506,140 @@ export default {
       this.theme = 'dark';
     }
 
-    this.loadData();
-    this.loadMessages();
+    await this.loadData();
     this.initCharts();
   },
   methods: {
     toggleFabMenu() {
       this.showFabMenu = !this.showFabMenu;
     },
-    
-clearLocalStorage() {
-  if (confirm('Are you sure you want to clear ALL local storage data? This will delete all programs, news, partners, and messages!')) {
-    localStorage.clear();
-    
-    // إعادة تعيين جميع البيانات
-    this.programs = [];
-    this.newsList = [];
-    this.partners = [];
-    this.messages = [];
-    
-    // إعادة تعيين النماذج الحالية
-    this.currentProgram = {
-      title: '',
-      description: '',
-      image: ''
-    };
-    this.currentNews = {
-      title: '',
-      content: '',
-      date: new Date().toISOString().split('T')[0],
-      image: ''
-    };
-    this.currentPartner = {
-      logo: ''
-    };
-    
-    // إغلاق القوائم المفتوحة
-    this.showProgramForm = false;
-    this.showNewsForm = false;
-    this.showPartnerForm = false;
-    this.showFabMenu = false;
-    
-    // تحديث الإحصائيات
-    this.updateStats();
-    
-    // إعادة تحميل الرسوم البيانية
-    this.initCharts();
-    
-    alert('All data has been cleared successfully.');
-  }
-},
-    
-    toggleTheme() {
-      this.theme = this.theme === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('theme', this.theme);
-      this.initCharts();
-    },
-    
-    logout() {
-      this.$router.push('/');
-    },
-    
-    loadData() {
-      const savedData = JSON.parse(localStorage.getItem('dashboardContent')) || {};
-      this.programs = savedData.programs || [];
-      this.newsList = savedData.news || [];
-      this.partners = savedData.partners || [];
-      this.updateStats();
-    },
-    
-    loadMessages() {
-      try {
-        const savedMessages = JSON.parse(localStorage.getItem('contactMessages')) || [];
-        this.messages = savedMessages.map(msg => ({
-          ...msg,
-          expanded: false,
-          date: msg.date || new Date().toISOString()
-        })).reverse();
-      } catch (error) {
-        console.error('Error loading messages:', error);
-        this.messages = [];
+
+    async clearLocalStorage() {
+      if (confirm('Are you sure you want to clear ALL local storage data? This will delete your theme preference and logout!')) {
+        localStorage.clear();
+        this.$router.push('/login');
       }
     },
-    
-    saveData() {
-      const dataToSave = {
-        programs: this.programs,
-        news: this.newsList,
-        partners: this.partners
-      };
-      localStorage.setItem('dashboardContent', JSON.stringify(dataToSave));
-      this.updateStats();
+
+    async logout() {
+      try {
+        await dashboardAPI.logout();
+      } catch (error) {
+        console.error('Logout error:', error);
+      } finally {
+        localStorage.removeItem('auth');
+        this.$router.push('/');
+      }
     },
-    
-    updateStats() {
-      this.stats[0].value = '$' + this.programs.reduce((sum, p) => sum + (parseInt(p.title.match(/\d+/)?.[0]) || 0), 0);
-      this.stats[1].value = this.newsList.length;
-      this.stats[2].value = this.partners.length;
-      this.stats[3].value = this.programs.length;
+
+    async loadData() {
+      this.loading = true;
+      try {
+        const statsResponse = await dashboardAPI.getStats();
+        console.log('Stats response:', statsResponse);
+        if (statsResponse?.status === 200) {
+          const data = statsResponse.data;
+          this.stats = [
+            { title: 'Total Programs', value: data.total_programs, trend: -2 },
+            { title: 'Total Messages', value: data.total_messages, trend: 0 },
+            { title: 'Total Partners', value: data.total_partners, trend: 3 },
+            { title: 'Latest News', value: data.latest_news.length, trend: 0 }
+          ];
+        }
+
+        if (this.activeTab === 'programs') {
+          await this.loadPrograms();
+        } else if (this.activeTab === 'news') {
+          await this.loadNews();
+        } else if (this.activeTab === 'partners') {
+          await this.loadPartners();
+        } else if (this.activeTab === 'messages') {
+          await this.loadMessages();
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+        this.showError('Failed to load data');
+      } finally {
+        this.loading = false;
+      }
     },
-    
+
+    async loadPrograms() {
+      try {
+        const response = await programAPI.getPrograms();
+        if (response.status === 200) {
+          this.programs = response.data;
+        }
+      } catch (error) {
+        console.error('Error loading programs:', error);
+        throw error;
+      }
+    },
+
+    async loadNews() {
+      try {
+        const response = await newsAPI.getNews();
+        console.log('news response:', response);
+        if (response.status === 200) {
+          this.newsList = response.data;
+        }
+      } catch (error) {
+        console.error('Error loading news:', error);
+        throw error;
+      }
+    },
+
+    async loadPartners() {
+      try {
+        const response = await partnerAPI.getPartners();
+        console.log('partners response:', response);
+        if (response.status === 200) {
+          this.partners = response.data;
+        }
+      } catch (error) {
+        console.error('Error loading partners:', error);
+        throw error;
+      }
+    },
+
+    async loadMessages() {
+      try {
+        const response = await messageAPI.getMessages();
+        if (response.status === 200) {
+          this.messages = response.data.map(msg => ({
+            ...msg,
+            expanded: false
+          }));
+        }
+      } catch (error) {
+        console.error('Error loading messages:', error);
+        throw error;
+      }
+    },
+
     toggleMessage(index) {
       this.messages[index].expanded = !this.messages[index].expanded;
     },
-    
-    deleteMessage(index) {
-      const messages = JSON.parse(localStorage.getItem('contactMessages')) || [];
-      messages.splice(index, 1);
-      localStorage.setItem('contactMessages', JSON.stringify(messages));
-      this.loadMessages();
+
+    async deleteMessage(index) {
+      try {
+        const messageId = this.messages[index].id;
+        const response = await dashboardAPI.deleteMessage(messageId);
+
+        if (response.status === 200) {
+          this.messages.splice(index, 1);
+          this.showSuccess('Message deleted successfully');
+        }
+      } catch (error) {
+        console.error('Error deleting message:', error);
+        this.showError('Failed to delete message');
+      }
     },
-    
+
     refreshMessages() {
       this.loadMessages();
     },
-    
+
     handleProgramImage(e) {
       const file = e.target.files[0];
       if (file) {
@@ -627,47 +650,100 @@ clearLocalStorage() {
         reader.readAsDataURL(file);
       }
     },
-    
+
     addProgram() {
       this.isEditingProgram = false;
-      this.editingProgramIndex = -1;
       this.currentProgram = {
+        id: null,
         title: '',
         description: '',
         image: ''
       };
       this.showProgramForm = true;
     },
-    
-    editProgram(index) {
-      this.currentProgram = {...this.programs[index]};
-      this.isEditingProgram = true;
-      this.editingProgramIndex = index;
-      this.showProgramForm = true;
+
+    async editProgram(programID) {
+      try {
+        const response = await programAPI.getProgramById(programID);
+        if (response.status === 200) {
+          this.currentProgram = response.data;
+          this.isEditingProgram = true;
+          this.showProgramForm = true;
+        } else {
+          this.showError('Failed to load program details');
+        }
+      } catch (error) {
+        console.error('Error fetching program details:', error);
+        this.showError('Failed to load program details');
+      }
     },
-    
-    saveProgram() {
+
+    async saveProgram() {
       if (!this.currentProgram.title || !this.currentProgram.description) {
-        alert('Please fill all required fields');
+        this.showError('Please fill all required fields');
         return;
       }
-      
-      if (this.isEditingProgram) {
-        this.programs[this.editingProgramIndex] = {...this.currentProgram};
-      } else {
-        this.programs.unshift({...this.currentProgram});
+
+      this.loading = true;
+
+      try {
+        let response;
+
+        const base64ToFile = (base64String, filename = 'program.png') => {
+          const arr = base64String.split(',');
+          const mime = arr[0].match(/:(.*?);/)[1];
+          const bstr = atob(arr[1]);
+          let n = bstr.length;
+          const u8arr = new Uint8Array(n);
+          while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+          }
+          return new File([u8arr], filename, { type: mime });
+        };
+
+        const formData = new FormData();
+        formData.append('title', this.currentProgram.title);
+        formData.append('description', this.currentProgram.description);
+
+        if (this.currentProgram.image) {
+          let imageFile;
+          if (this.currentProgram.image instanceof File) {
+            imageFile = this.currentProgram.image;
+          } else if (
+            typeof this.currentProgram.image === 'string' &&
+            this.currentProgram.image.startsWith('data:')
+          ) {
+            imageFile = base64ToFile(this.currentProgram.image, 'program.png');
+          }
+          if (imageFile) {
+            formData.append('image', imageFile);
+          }
+        }
+
+        if (this.isEditingProgram) {
+          response = await programAPI.updateProgram(this.currentProgram.id, formData);
+        } else {
+          response = await programAPI.createProgram(formData);
+        }
+
+        if (response.status === 200 || response.status === 201) {
+          this.showSuccess(`Program ${this.isEditingProgram ? 'updated' : 'created'} successfully`);
+          this.cancelProgramForm();
+          await this.loadPrograms();
+        }
+      } catch (error) {
+        console.error('Error saving program:', error?.response?.data || error.message);
+        this.showError(error?.response?.data?.message || 'Failed to save program');
+      } finally {
+        this.loading = false;
       }
-      
-      this.cancelProgramForm();
-      this.saveData();
     },
-    
+
     cancelProgramForm() {
       this.showProgramForm = false;
       this.isEditingProgram = false;
-      this.editingProgramIndex = -1;
     },
-    
+
     handleNewsImage(e) {
       const file = e.target.files[0];
       if (file) {
@@ -678,11 +754,11 @@ clearLocalStorage() {
         reader.readAsDataURL(file);
       }
     },
-    
+
     addNews() {
       this.isEditingNews = false;
-      this.editingNewsIndex = -1;
       this.currentNews = {
+        id: null,
         title: '',
         content: '',
         date: new Date().toISOString().split('T')[0],
@@ -690,36 +766,90 @@ clearLocalStorage() {
       };
       this.showNewsForm = true;
     },
-    
-    editNews(index) {
-      this.currentNews = {...this.newsList[index]};
-      this.isEditingNews = true;
-      this.editingNewsIndex = index;
-      this.showNewsForm = true;
+
+    async editNews(newsID) {
+      try {
+        const response = await newsAPI.getNewsById(newsID);
+        if (response.status === 200) {
+          this.currentNews = response.data;
+          this.isEditingNews = true;
+          this.showNewsForm = true;
+        } else {
+          this.showError('Failed to load news details');
+        }
+      } catch (error) {
+        console.error('Error fetching news details:', error);
+        this.showError('Failed to load news details');
+      }
     },
-    
-    saveNews() {
-      if (!this.currentNews.title || !this.currentNews.content) {
-        alert('Please fill all required fields');
+
+    async saveNews() {
+      if (!this.currentNews.title || !this.currentNews.date) {
+        this.showError('Please fill all required fields');
         return;
       }
-      
-      if (this.isEditingNews) {
-        this.newsList[this.editingNewsIndex] = {...this.currentNews};
-      } else {
-        this.newsList.unshift({...this.currentNews});
+
+      this.loading = true;
+
+      try {
+        let response;
+
+        const base64ToFile = (base64String, filename = 'news.png') => {
+          const arr = base64String.split(',');
+          const mime = arr[0].match(/:(.*?);/)[1];
+          const bstr = atob(arr[1]);
+          let n = bstr.length;
+          const u8arr = new Uint8Array(n);
+          while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+          }
+          return new File([u8arr], filename, { type: mime });
+        };
+
+        const formData = new FormData();
+        formData.append('title', this.currentNews.title);
+        formData.append('date', this.currentNews.date);
+
+        if (this.currentNews.image) {
+          let imageFile;
+          if (this.currentNews.image instanceof File) {
+            imageFile = this.currentNews.image;
+          } else if (
+            typeof this.currentNews.image === 'string' &&
+            this.currentNews.image.startsWith('data:')
+          ) {
+            imageFile = base64ToFile(this.currentNews.image, 'news.png');
+          }
+          if (imageFile) {
+            formData.append('image', imageFile);
+          }
+        }
+
+        if (this.isEditingNews) {
+          response = await newsAPI.updateNews(this.currentNews.id, formData);
+        } else {
+          response = await newsAPI.createNews(formData);
+        }
+
+        if (response.status === 200 || response.status === 201 || response.data?.message) {
+          this.showSuccess(`News ${this.isEditingNews ? 'updated' : 'created'} successfully`);
+          this.cancelNewsForm();
+          await this.loadNews();
+        }
+      } catch (error) {
+        console.error('Error saving news:', error?.response?.data || error.message);
+        const msg = error?.response?.data?.errors?.join(', ') || 'Failed to save news';
+        this.showError(msg);
+      } finally {
+        this.loading = false;
       }
-      
-      this.cancelNewsForm();
-      this.saveData();
     },
-    
+
     cancelNewsForm() {
       this.showNewsForm = false;
       this.isEditingNews = false;
-      this.editingNewsIndex = -1;
     },
-    
+
     handlePartnerLogo(e) {
       const file = e.target.files[0];
       if (file) {
@@ -730,70 +860,144 @@ clearLocalStorage() {
         reader.readAsDataURL(file);
       }
     },
-    
+
     addPartner() {
       this.isEditingPartner = false;
-      this.editingPartnerIndex = -1;
       this.currentPartner = {
+        id: null,
         logo: ''
       };
       this.showPartnerForm = true;
     },
-    
-    editPartner(index) {
-      this.currentPartner = {...this.partners[index]};
-      this.isEditingPartner = true;
-      this.editingPartnerIndex = index;
-      this.showPartnerForm = true;
+
+    async editPartner(partnerID) {
+      try {
+        const response = await partnerAPI.getPartnerById(partnerID);
+        console.log('edit partner response:', response);
+        if (response.status === 200) {
+          this.currentPartner = response.data;
+          this.isEditingPartner = true;
+          this.showPartnerForm = true;
+        } else {
+          this.showError('Failed to load partner details');
+        }
+      } catch (error) {
+        console.error('Error fetching partner details:', error);
+        this.showError('Failed to load partner details');
+      }
     },
-    
-    savePartner() {
+
+    async savePartner() {
       if (!this.currentPartner.logo) {
-        alert('Please upload a logo');
+        this.showError('Please upload a logo');
         return;
       }
-      
-      if (this.isEditingPartner) {
-        this.partners[this.editingPartnerIndex] = {...this.currentPartner};
-      } else {
-        this.partners.unshift({...this.currentPartner});
+
+      this.loading = true;
+      try {
+        let response;
+
+        const base64ToFile = (base64String, filename = 'partner.png') => {
+          const arr = base64String.split(',');
+          const mime = arr[0].match(/:(.*?);/)[1];
+          const bstr = atob(arr[1]);
+          let n = bstr.length;
+          const u8arr = new Uint8Array(n);
+          while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+          }
+          return new File([u8arr], filename, { type: mime });
+        };
+
+        const formData = new FormData();
+        if (this.currentPartner.logo) {
+          let imageFile;
+          if (this.currentPartner.logo instanceof File) {
+            imageFile = this.currentPartner.logo;
+          } else if (
+            typeof this.currentPartner.logo === 'string' &&
+            this.currentPartner.logo.startsWith('data:')
+          ) {
+            imageFile = base64ToFile(this.currentPartner.logo, 'partner.png');
+          }
+
+          if (imageFile) {
+            formData.append('image', imageFile);
+          }
+        }
+
+        if (this.isEditingPartner) {
+          response = await partnerAPI.updatePartner(this.currentPartner.id, formData);
+        } else {
+          response = await partnerAPI.createPartner(formData);
+        }
+
+        if (response.status === 200 || response.status === 201) {
+          this.showSuccess(`Partner ${this.isEditingPartner ? 'updated' : 'added'} successfully`);
+          this.cancelPartnerForm();
+          await this.loadPartners();
+        }
+      } catch (error) {
+        console.error('Error saving partner:', error);
+        this.showError('Failed to save partner');
+      } finally {
+        this.loading = false;
       }
-      
-      this.cancelPartnerForm();
-      this.saveData();
     },
-    
+
     cancelPartnerForm() {
       this.showPartnerForm = false;
       this.isEditingPartner = false;
-      this.editingPartnerIndex = -1;
     },
-    
-    confirmDelete(type, index) {
-      this.itemToDelete = { type, index };
+
+    confirmDelete(type, id) {
+      this.itemToDelete = { type, id };
       this.showDeleteModal = true;
     },
-    
-    deleteItem() {
-      switch(this.itemToDelete.type) {
-        case 'program':
-          this.programs.splice(this.itemToDelete.index, 1);
-          break;
-        case 'news':
-          this.newsList.splice(this.itemToDelete.index, 1);
-          break;
-        case 'partner':
-          this.partners.splice(this.itemToDelete.index, 1);
-          break;
+
+    async deleteItem() {
+      this.loading = true;
+      try {
+        let response;
+
+        switch (this.itemToDelete.type) {
+          case 'program':
+            console.log('Deleting program with ID:', this.itemToDelete.id);
+            response = await dashboardAPI.deleteProgram(this.itemToDelete.id);
+            if (response.status === 200) {
+              this.programs = this.programs.filter(p => p.id !== this.itemToDelete.id);
+            }
+            break;
+          case 'news':
+            response = await dashboardAPI.deleteNews(this.itemToDelete.id);
+            if (response.status === 200) {
+              this.newsList = this.newsList.filter(n => n.id !== this.itemToDelete.id);
+            }
+            break;
+          case 'partner':
+            response = await dashboardAPI.deletePartner(this.itemToDelete.id);
+            if (response.status === 200) {
+              this.partners = this.partners.filter(p => p.id !== this.itemToDelete.id);
+            }
+            break;
+        }
+
+        if (response?.status === 200) {
+          this.showSuccess('Item deleted successfully');
+        }
+      } catch (error) {
+        console.error('Error deleting item:', error);
+        this.showError('Failed to delete item');
+      } finally {
+        this.loading = false;
+        this.showDeleteModal = false;
       }
-      this.showDeleteModal = false;
-      this.saveData();
     },
-    
+
     initCharts() {
       const textColor = this.theme === 'dark' ? '#fff' : '#666';
       const gridColor = this.theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-      
+
       if (this.$refs.donationsChart) {
         const donationsCtx = this.$refs.donationsChart.getContext('2d');
         new Chart(donationsCtx, {
@@ -900,14 +1104,29 @@ clearLocalStorage() {
         });
       }
     },
-    
+
     formatDate(dateString) {
       const options = { year: 'numeric', month: 'short', day: 'numeric' };
       return new Date(dateString).toLocaleDateString(undefined, options);
+    },
+
+    showError(message) {
+      alert(`Error: ${message}`);
+    },
+
+    showSuccess(message) {
+      alert(`Success: ${message}`);
+    }
+  },
+  watch: {
+    async activeTab() {
+      await this.loadData();
     }
   }
 }
 </script>
+
+
 
 <style scoped>
 .stat-card {
